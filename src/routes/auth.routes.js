@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const pool = require('../config/db');
 
 router.post('/login', async (req, res) => {
@@ -25,8 +26,8 @@ router.post('/login', async (req, res) => {
         const user = result.rows[0];
         console.log('👤 User found:', user.email);
 
-        // Check password (plain text for now, use bcrypt in production)
-        const validPassword = (password === user.password);
+        // Check password using bcrypt
+        const validPassword = await bcrypt.compare(password, user.password);
 
         if (!validPassword) {
             console.log('❌ Invalid password for:', email);
