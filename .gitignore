@@ -1,0 +1,12 @@
+node_modules/
+.env
+*.log
+# Uploads
+uploads/
+!uploads/.gitkeep
+!uploads/**/.gitkeep
+
+# Or just ignore everything in uploads except .gitkeep
+uploads/*
+!uploads/.gitkeep
+!uploads/**/.gitkeep
