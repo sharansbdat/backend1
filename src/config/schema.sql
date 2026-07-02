@@ -138,3 +138,13 @@ VALUES (
   'admin',
   1
 ) ON CONFLICT (email) DO NOTHING;
+
+-- Insert default Super Admin (username: admin@sidcms.com, password: admin123)
+INSERT INTO admins (name, email, password, role, school_id)
+VALUES (
+  'Super Admin',
+  'admin@sidcms.com',
+  '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lihC',
+  'super',
+  NULL
+) ON CONFLICT (email) DO NOTHING;
