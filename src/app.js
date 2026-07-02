@@ -11,8 +11,39 @@ const app = express();
 
 // ── Security & parsing ─────────────────────────
 app.use(helmet());
+
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:3000',
+  'https://sm.syntrobit.com',
+];
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, postman, or same-origin)
+    if (!origin) return callback(null, true);
+    
+    const clientUrl = process.env.CLIENT_URL;
+    const origins = [...allowedOrigins];
+    if (clientUrl) {
+      origins.push(clientUrl);
+      origins.push(clientUrl.replace(/\/$/, "")); // remove trailing slash
+    }
+    
+    // Check if the request origin matches any allowed origin
+    const isAllowed = origins.some(opt => {
+      const normalizedOpt = opt.replace(/\/$/, "").toLowerCase();
+      const normalizedOrigin = origin.replace(/\/$/, "").toLowerCase();
+      return normalizedOpt === normalizedOrigin;
+    });
+
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
+    }
+  },
   credentials: true,
 }));
 app.use(express.json());
